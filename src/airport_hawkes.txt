@@ -1,0 +1,20 @@
+Ajaccio              : 34 alertes
+Bastia               : 30 alertes
+Biarritz             : 25 alertes
+Nantes               : 38 alertes
+Pise                 : 25 alertes
+
+--- Ajaccio ---
+  μ=0.00376  α=4.23484  β=4.33481  (ratio α/β=0.977)
+
+--- Bastia ---
+  μ=0.00363  α=4.96615  β=5.03144  (ratio α/β=0.987)
+
+--- Biarritz ---
+  μ=0.00450  α=5.52368  β=5.61222  (ratio α/β=0.984)
+
+--- Nantes ---
+  μ=0.00240  α=5.28938  β=5.37894  (ratio α/β=0.983)
+
+--- Pise ---
+  μ=0.00591  α=4.68142  β=4.76229  (ratio α/β=0.983)
