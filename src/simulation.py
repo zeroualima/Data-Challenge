@@ -3,36 +3,47 @@ import matplotlib.pyplot as plt
 
 ### Simulation de validation (algorithme de thinning d'Ogata)
 
-DELTA = 30 * 60
+DELTA = 30 # 30 min
 
-def simulate_alert(mu, alpha, beta, rng=None):
+def simulate_alert(mu, alpha, beta, rng=None, max_duration=100*60):
     if rng is None:
         rng = np.random.default_rng()
 
     events = [0.0]
     t = 0.0
-    R = 0.0  # variable récursive : R = Σ exp(-β(t - τᵢ))
+    # R = Σ exp(-β*(t - τᵢ)) pour tous les événements passés
+    # Après l'événement initial en t=0 : R = exp(-β*0) = 1
+    R = 1.0
 
     while True:
-        lam_bar = mu + alpha * R + alpha  # borne supérieure (juste après un event)
+        # Borne supérieure : intensité juste après le dernier événement
+        # λ* est décroissante entre événements donc c'est un upper bound valide
+        lam_bar = mu + alpha * R
+
         dt = rng.exponential(1.0 / lam_bar)
         t_next = t + dt
 
         if dt >= DELTA:
             break
 
-        # Mise à jour récursive de R à t_next (avant le potentiel nouvel event)
-        R_next = np.exp(-beta * dt) * (1.0 + R)
-        lam_next = mu + alpha * R_next
+        if t_next > max_duration:
+            print("ooups")
+            break
+        
+        # Décroissance de R vers t_next — PAS de +1 car aucun événement encore
+        R_decayed = np.exp(-beta * dt) * R
+        lam_next = mu + alpha * R_decayed
 
         if rng.uniform() <= lam_next / lam_bar:
+            # Événement accepté : on ajoute sa contribution (+1) à R
             events.append(t_next)
-            R = R_next  # on inclut le nouvel event dans R
+            R = R_decayed + 1
         else:
-            R = R_next  # pas d'event mais R se met à jour quand même
+            # Événement rejeté : R décroît seulement, pas de +1
+            R = R_decayed
 
         t = t_next
-
+    # print("nice")
     return np.array(events)
 
 
@@ -47,7 +58,7 @@ def simulate_hawkes(mu, alpha, beta, T_max, history=None, rng=None):
     R = sum(np.exp(-beta * (t - s)) for s in events[:-1])
 
     while t < T_max:
-        lam_bar = mu + alpha * (R + 1) + 1e-10
+        lam_bar = mu + alpha * R + 1e-10
         dt = rng.exponential(1.0 / lam_bar)
         t_next = t + dt
 
@@ -67,25 +78,27 @@ def simulate_hawkes(mu, alpha, beta, T_max, history=None, rng=None):
 
     return [e for e in events if not history or e > history[-1]]
 
-def simulation_validation(params: dict, trajectories: list, airport: str,
-                           n_sim: int = 500):
+def simulation_validation(params: dict, trajectories: list, airport: str, n_sim: int = 500):
+    print(f"################## Simulation for {airport} ##################")
     mu, alpha, beta = params['mu'], params['alpha'], params['beta']
     rng = np.random.default_rng(42)
 
     # Propriétés observées
-    obs_durations  = [(t[-1] + DELTA) / 60 for t in trajectories]
+    obs_durations  = [t[-1] + DELTA for t in trajectories]
     obs_counts     = [len(t) for t in trajectories]
-    obs_inter      = np.concatenate([np.diff(t) / 60 for t in trajectories])
-
+    obs_inter      = np.concatenate([np.diff(t) for t in trajectories])
     # Propriétés simulées
     sim_durations, sim_counts, sim_inter = [], [], []
     for i in range(n_sim):
         traj = simulate_alert(mu, alpha, beta, rng)
-        sim_durations.append((traj[-1] + DELTA) / 60)
+        sim_durations.append(traj[-1] + DELTA)
         sim_counts.append(len(traj))
         if len(traj) >= 2:
-            sim_inter.extend(np.diff(traj) / 60)
-        print(i) ##
+            sim_inter.extend(np.diff(traj).tolist())
+    print(f"  Durée moyenne OBSERVÉE : {np.mean(obs_durations):.1f} min")
+    print(f"  Durée moyenne SIMULÉE  : {np.mean(sim_durations):.1f} min")
+    print(f"  Impacts moyens OBSERVÉS : {np.mean(obs_counts):.1f}")
+    print(f"  Impacts moyens SIMULÉS  : {np.mean(sim_counts):.1f}")
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
     fig.suptitle(f'Validation par simulation — {airport}  '

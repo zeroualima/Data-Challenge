@@ -33,7 +33,8 @@ def compute_residuals(params: dict, trajectories: list) -> np.ndarray:
     return np.array(all_residuals)
 
 
-def goodness_of_fit(params: dict, trajectories: list, airport: str):
+def goodness_of_fit(params: dict, trajectories: list, airport: str): 
+    print(f"################## Goodness of fit for {airport} ##################")
     residuals = compute_residuals(params, trajectories)
     stat, pvalue = kstest(residuals, 'expon', args=(0, 1))
     print(f"{airport} — KS stat={stat:.4f}  p-value={pvalue:.4f} "

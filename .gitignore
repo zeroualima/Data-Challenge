@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+figures/
+*.csv
+!dataset_test/dataset_set.csv
+data_train_databattle2026/
