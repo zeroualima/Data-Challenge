@@ -147,8 +147,7 @@ def predict_ustar(models: dict, f_n, epsilon: float = 0.10):
 
 
 # Dans lgbm_model.py — version vectorisée
-def predict_ustar_batch(models: dict, X: np.ndarray,
-                        epsilons: list) -> np.ndarray:
+def predict_ustar_batch(models: dict, X: np.ndarray, epsilons: list) -> np.ndarray:
     """
     X        : (N, n_features)
     epsilons : liste de valeurs ε
