@@ -47,7 +47,7 @@ def load_data(path: str):
     df = df.sort_values(['airport', 'date']).reset_index(drop=True)
 
     # Colonne t_min sur tout le dataset
-    df['t_min'] = df['date'].values.astype('int64') / 1e9 / 60
+    df['t_min'] = (df['date'] - pd.Timestamp('1970-01-01', tz='UTC')).dt.total_seconds() / 60
 
     df_inner = df[df['dist'] <= 20].copy()  # zone alerte
     df_outer = df[df['dist'] <= 50].copy()  # zone étendue

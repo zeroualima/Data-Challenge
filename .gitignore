@@ -1,7 +1,8 @@
 __pycache__/
 *.pyc
 *.pyo
+.ipynb_checkpoints/
 figures/
-*.csv
-!dataset_test/dataset_set.csv
 data_train_databattle2026/
+dataset_test/dataset_set.csv
+dataset_test/predictions.csv
