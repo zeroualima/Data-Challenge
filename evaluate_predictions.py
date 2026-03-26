@@ -76,6 +76,7 @@ def evaluate(data_path, preds_path, output_fig=None):
 
     # ── Load predictions ──────────────────────────────────────────────────────
     predictions = pd.read_csv(preds_path)
+    predictions = predictions[predictions['airport_alert_id'] != -1.0]
     predictions['predicted_date_end_alert'] = pd.to_datetime(
         predictions['predicted_date_end_alert'], utc=True, format='mixed')
     predictions['prediction_date'] = pd.to_datetime(
