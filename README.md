@@ -105,12 +105,8 @@ cd "DATA CHALLENGE"
 pip install pandas numpy scipy lightgbm scikit-learn matplotlib tqdm
 ```
 
-Placer les données dans les dossiers suivants :
+Les données tronquées fournies par le jury sont présentes dans déja dans `dataset_test/dataset_set.csv`, c'est a dire il suffit de les changer pour générer d'autres prédictions.
 
-```
-data_train_databattle2026/segment_alerts_all_airports_train.csv
-dataset_test/dataset_set.csv
-```
 
 ### Exécution
 
@@ -120,7 +116,7 @@ dataset_test/dataset_set.csv
 python3 -m src.generate_predictions
 ```
 
-Produit `dataset_test/predictions.csv` avec le format attendu par le jury
+Produit `dataset_test/predictions.csv` pour les données de `dataset_test/dataset_set.csv` avec le format attendu par le jury
 (colonnes : `airport`, `airport_alert_id`, `prediction_date`,
 `predicted_date_end_alert`, `confidence`).
 
@@ -132,14 +128,6 @@ python3 evaluate_predictions.py \
   --preds ./dataset_test/predictions.csv \
   --output ./figures/evaluation_curve.png
 ```
-
-**Notebook du jury (évaluation standard) :**
-
-```bash
-jupyter notebook dataset_test/Evaluation_databattle_meteorage.ipynb
-```
-
-Modifier `input_file` pour pointer vers `dataset_test/segment_alerts_all_airports_eval.csv`.
 
 ---
 
