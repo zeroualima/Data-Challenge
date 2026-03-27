@@ -105,7 +105,7 @@ cd "DATA CHALLENGE"
 pip install pandas numpy scipy lightgbm scikit-learn matplotlib tqdm
 ```
 
-Les données tronquées fournies par le jury sont présentes dans déja dans `dataset_test/dataset_set.csv`, c'est a dire il suffit de les changer pour générer d'autres prédictions.
+Les données tronquées fournies par le jury sont présentes déjà dans `dataset_test/dataset_set.csv`, c'est à dire il suffit de les changer pour générer d'autres prédictions.
 
 
 ### Exécution
